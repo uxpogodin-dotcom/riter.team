@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "https://riter.team" }
+    { "source": "/(.*)", "destination": "https://mobile-writers-052869.framer.app/$1" }
   ]
 }
