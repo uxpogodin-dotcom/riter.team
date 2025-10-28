@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VED · vedomosti for Zoomers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grid-background"></div>
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-mark">VED</span>
+      <span class="logo-text">vedomosti.ru</span>
+    </div>
+    <nav class="primary-nav">
+      <a href="#videos">Video</a>
+      <a href="#news">News</a>
+      <a href="#longreads">Longreads</a>
+      <a href="#newsletter">Subscribe</a>
+    </nav>
+    <div class="header-actions">
+      <button class="pill" id="darkModeToggle" aria-label="Toggle dark mode">🌗</button>
+      <button class="pill pill--primary">Log In</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="hero-kicker">Daily Vibes, Zero Boredom</p>
+        <h1>The only news feed curated for the next generation of decision makers.</h1>
+        <p class="hero-subtitle">Swipe through short-form video explainers, dive into breaking stories, and binge deep longreads—all built for your attention span and curiosity.</p>
+        <div class="cta-row">
+          <button class="pill pill--primary" id="dailyBriefing">Get daily briefing</button>
+          <button class="pill pill--ghost" id="randomJump">Surprise me</button>
+        </div>
+        <div class="live-stats" role="status">
+          <span><strong id="liveUsers">12,540</strong> zoomers online</span>
+          <span>Next live AMA in <strong id="nextEvent">03:17:12</strong></span>
+        </div>
+      </div>
+      <div class="hero-media">
+        <div class="hero-video-card" id="heroVideoCard">
+          <iframe src="https://www.youtube.com/embed/6Af6b_wyiwI" title="Daily briefing teaser" allowfullscreen></iframe>
+          <div class="video-meta">
+            <span class="tag">Daily Briefing</span>
+            <h2>What Gen Z investors are watching this week</h2>
+            <p>3 minute digest · updated <span id="heroUpdated">2m ago</span></p>
+          </div>
+        </div>
+        <div class="hero-playlist" id="heroPlaylist" aria-label="Trending playlist">
+          <button class="playlist-item active" data-video="https://www.youtube.com/embed/6Af6b_wyiwI">
+            <span>Market Moodboard</span>
+            <small>Tech &amp; finance crash course</small>
+          </button>
+          <button class="playlist-item" data-video="https://www.youtube.com/embed/MbH96NB9HXU">
+            <span>Culture Radar</span>
+            <small>Memes that moved politics</small>
+          </button>
+          <button class="playlist-item" data-video="https://www.youtube.com/embed/8d2KcZs0Hyg">
+            <span>Climate Now</span>
+            <small>Extreme weather decoded</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Live pulse">
+      <div class="ticker-track" id="tickerTrack">
+        <span>🌍 Earth Overshoot Day resets in 142 days</span>
+        <span>🚀 New reusable rockets spark micro-launch boom</span>
+        <span>💰 VC deal-flow rebounding in climate tech</span>
+        <span>🎧 Exclusive: Hyperpop meets geopolitics podcast drop</span>
+        <span>🧠 Neurotech startups compete for your sleep cycles</span>
+      </div>
+    </section>
+
+    <section class="content-section" id="videos">
+      <div class="section-header">
+        <h2>Video Drops</h2>
+        <div class="filters" role="tablist" aria-label="Video categories">
+          <button class="pill pill--filter active" data-filter="all">All</button>
+          <button class="pill pill--filter" data-filter="tech">Tech</button>
+          <button class="pill pill--filter" data-filter="culture">Culture</button>
+          <button class="pill pill--filter" data-filter="planet">Planet</button>
+        </div>
+      </div>
+      <div class="content-grid" id="videoGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="content-section" id="news">
+      <div class="section-header">
+        <h2>Signal, Not Noise</h2>
+        <button class="pill pill--ghost" id="togglePulse">Pause Live Pulse</button>
+      </div>
+      <div class="news-stream" id="newsStream"></div>
+    </section>
+
+    <section class="content-section content-section--contrast" id="longreads">
+      <div class="section-header">
+        <h2>Deep Dives &amp; Longreads</h2>
+        <div class="reading-progress" aria-hidden="true">
+          <span>Reading marathon</span>
+          <div class="progress-bar"><div id="progressBar"></div></div>
+        </div>
+      </div>
+      <div class="longreads-grid" id="longreadsGrid"></div>
+    </section>
+
+    <section class="newsletter" id="newsletter">
+      <div class="newsletter-card">
+        <h2>Join the insider list</h2>
+        <p>Get one curated email, every morning at 08:00, with the three moves to watch and the memes to understand.</p>
+        <form class="newsletter-form">
+          <label for="email" class="sr-only">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@domain.com" required />
+          <button type="submit" class="pill pill--primary">Subscribe</button>
+        </form>
+        <p class="newsletter-footnote">No spam, only signal. Unsubscribe anytime.</p>
+      </div>
+      <div class="leaderboard" aria-live="polite">
+        <h3>Community leaderboard</h3>
+        <ol id="leaderboardList"></ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <p>&copy; <span id="year"></span> ved.vedomosti.ru — Futureproof your feed.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#top">Back to top</a>
+      <a href="mailto:hi@vedomosti.ru">Pitch a story</a>
+      <a href="#">Community guidelines</a>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <h3 id="modalTitle">Your daily briefing is locked in</h3>
+      <p id="modalBody">Keep an eye on your inbox — we drop the freshest signal at 08:00. Meanwhile, explore the Climate Now longread everyone is bookmarking.</p>
+      <button class="pill pill--primary" id="modalAction">Take me there</button>
+    </div>
+  </div>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
