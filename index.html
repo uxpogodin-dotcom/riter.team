@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#181614" />
+  <title>Приглашение</title>
+  <style>
+    :root {
+      --bg: #181614;
+      --surface: #22201d;
+      --text: #f3eee6;
+      --muted: #cec3b3;
+      --accent: #d18e4f;
+      --steam: rgba(243, 238, 230, 0.9);
+      --steam-soft: rgba(243, 238, 230, 0.72);
+      --radius: 20px;
+      --shadow: 0 8px 26px rgba(0, 0, 0, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Inter", "Manrope", "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 20% 0%, #2a2622 0%, var(--bg) 48%);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      position: relative;
+      width: min(100%, 440px);
+      min-height: calc(100dvh - 32px);
+      border-radius: 28px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #201d1a 0%, #171513 100%);
+      box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 14px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .photo-wrap {
+      border-radius: calc(var(--radius) + 2px);
+      overflow: hidden;
+      background: #0f0e0d;
+      aspect-ratio: 4 / 5;
+      box-shadow: var(--shadow);
+    }
+
+    .guest-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card {
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(44, 40, 36, 0.74), rgba(29, 27, 24, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      backdrop-filter: blur(5px);
+    }
+
+    .greeting {
+      margin: 0;
+      font-size: clamp(1.36rem, 3.2vw, 1.56rem);
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+      font-weight: 600;
+    }
+
+    .main-message {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.36;
+    }
+
+    .details {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .details li,
+    .details a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-size: 0.98rem;
+    }
+
+    .details .label {
+      color: #c8b9a4;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 600;
+    }
+
+    .details .value {
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .details a {
+      transition: border-color 180ms ease, background-color 180ms ease;
+    }
+
+    .details a:active,
+    .details a:focus-visible {
+      border-color: rgba(209, 142, 79, 0.66);
+      background: #2a2723;
+      outline: none;
+    }
+
+    .details a .value::after {
+      content: "↗";
+      margin-left: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .cta {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff9f1;
+      background: linear-gradient(180deg, #d4995e 0%, #be7b3e 100%);
+      box-shadow: 0 8px 18px rgba(209, 142, 79, 0.28);
+      cursor: pointer;
+      transition: transform 140ms ease, filter 140ms ease;
+    }
+
+    .cta:active {
+      transform: translateY(1px) scale(0.997);
+      filter: brightness(0.97);
+    }
+
+    .steam-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: auto;
+      touch-action: none;
+      transition: opacity 360ms ease;
+      background: transparent;
+    }
+
+    .steam-layer.is-cleared {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .steam-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .hint {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 6;
+      color: rgba(42, 34, 27, 0.78);
+      background: rgba(244, 239, 231, 0.58);
+      border: 1px solid rgba(79, 63, 44, 0.2);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      backdrop-filter: blur(2px);
+      transition: opacity 280ms ease;
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hint.hidden {
+      opacity: 0;
+    }
+
+    @media (min-width: 560px) {
+      body {
+        padding: 22px;
+      }
+
+      .content {
+        padding: 18px;
+        gap: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .steam-layer,
+      .hint,
+      .cta,
+      .details a {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <section class="content" aria-live="polite">
+      <div class="photo-wrap">
+        <img id="guestPhoto" class="guest-photo" alt="Фото гостя" />
+      </div>
+
+      <section class="card">
+        <h1 class="greeting" id="greeting"></h1>
+        <p class="main-message" id="message"></p>
+      </section>
+
+      <ul class="details card" aria-label="Детали события">
+        <li>
+          <span class="label">Дата</span>
+          <span class="value" id="dateValue"></span>
+        </li>
+        <li>
+          <span class="label">Время</span>
+          <span class="value" id="timeValue"></span>
+        </li>
+        <li>
+          <a id="mapLink" href="#" target="_blank" rel="noopener noreferrer" aria-label="Открыть адрес на карте">
+            <span class="label">Адрес</span>
+            <span class="value" id="addressValue"></span>
+          </a>
+        </li>
+      </ul>
+
+      <button class="cta" id="telegramBtn" type="button">Буду</button>
+    </section>
+
+    <div class="steam-layer" id="steamLayer" aria-hidden="true">
+      <canvas class="steam-canvas" id="steamCanvas"></canvas>
+      <div class="hint" id="steamHint">Проведи пальцем, чтобы убрать пар</div>
+    </div>
+  </main>
+
+  <script>
+    const CONFIG = {
+      guestPhotoDefault: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+      guestPhotoByName: {
+        yura: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+      },
+      birthdayPersonName: "Алёна",
+      telegramUsername: "alena_username",
+      eventType: "день рождения в бане",
+      date: "7 июня, суббота",
+      time: "18:00",
+      address: "ул. Берёзовая, 12",
+      mapsLink: "https://www.google.com/maps/search/?api=1&query=%D1%83%D0%BB.+%D0%91%D0%B5%D1%80%D1%91%D0%B7%D0%BE%D0%B2%D0%B0%D1%8F%2C+12",
+      telegramMessageTemplate: "{birthday}, привет! Я буду {date} в {time} 🔥",
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const rawName = (params.get("name") || "Юра").trim();
+    const guestName = rawName ? rawName[0].toUpperCase() + rawName.slice(1) : "Юра";
+    const photoKey = rawName.toLowerCase();
+
+    const data = {
+      guestName,
+      guestPhoto: CONFIG.guestPhotoByName[photoKey] || CONFIG.guestPhotoDefault,
+      birthdayPersonName: CONFIG.birthdayPersonName,
+      eventType: CONFIG.eventType,
+      date: CONFIG.date,
+      time: CONFIG.time,
+      address: CONFIG.address,
+      mapsLink: CONFIG.mapsLink,
+      telegramUsername: CONFIG.telegramUsername,
+    };
+
+    const greetingEl = document.getElementById("greeting");
+    const messageEl = document.getElementById("message");
+    const dateEl = document.getElementById("dateValue");
+    const timeEl = document.getElementById("timeValue");
+    const addressEl = document.getElementById("addressValue");
+    const mapLinkEl = document.getElementById("mapLink");
+    const photoEl = document.getElementById("guestPhoto");
+    const telegramBtn = document.getElementById("telegramBtn");
+
+    greetingEl.textContent = `${data.guestName}, это приглашение для тебя`;
+    messageEl.textContent = `${data.birthdayPersonName} зовёт тебя на ${data.eventType}`;
+    dateEl.textContent = data.date;
+    timeEl.textContent = data.time;
+    addressEl.textContent = data.address;
+    mapLinkEl.href = data.mapsLink;
+    photoEl.src = data.guestPhoto;
+
+    telegramBtn.addEventListener("click", () => {
+      const message = CONFIG.telegramMessageTemplate
+        .replace("{birthday}", data.birthdayPersonName)
+        .replace("{date}", data.date)
+        .replace("{time}", data.time);
+      const tgUrl = `https://t.me/${data.telegramUsername}?text=${encodeURIComponent(message)}`;
+      window.open(tgUrl, "_blank", "noopener,noreferrer");
+    });
+
+    const steamLayer = document.getElementById("steamLayer");
+    const steamHint = document.getElementById("steamHint");
+    const canvas = document.getElementById("steamCanvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+    let isDrawing = false;
+    let totalCleared = 0;
+    let lastPoint = null;
+    let hasHiddenHint = false;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const clearThreshold = prefersReducedMotion ? 0.22 : 0.36;
+
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const { width, height } = steamLayer.getBoundingClientRect();
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drawSteam(width, height);
+      totalCleared = 0;
+    }
+
+    function drawSteam(width, height) {
+      ctx.clearRect(0, 0, width, height);
+
+      const base = ctx.createLinearGradient(0, 0, 0, height);
+      base.addColorStop(0, "rgba(245, 240, 232, 0.94)");
+      base.addColorStop(0.5, "rgba(242, 236, 227, 0.88)");
+      base.addColorStop(1, "rgba(240, 233, 224, 0.92)");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < 36; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const r = 36 + Math.random() * 92;
+        const cloud = ctx.createRadialGradient(x, y, 0, x, y, r);
+        cloud.addColorStop(0, "rgba(255,255,255,0.22)");
+        cloud.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = cloud;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalCompositeOperation = "destination-out";
+    }
+
+    function eraseAt(x, y, radius = 34) {
+      const puff = ctx.createRadialGradient(x, y, radius * 0.24, x, y, radius);
+      puff.addColorStop(0, "rgba(0,0,0,0.95)");
+      puff.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = puff;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function getPoint(e) {
+      const rect = canvas.getBoundingClientRect();
+      const point = e.touches ? e.touches[0] : e;
+      return {
+        x: point.clientX - rect.left,
+        y: point.clientY - rect.top,
+      };
+    }
+
+    function wipe(e) {
+      e.preventDefault();
+      const current = getPoint(e);
+      eraseAt(current.x, current.y, 40);
+
+      if (lastPoint) {
+        const dx = current.x - lastPoint.x;
+        const dy = current.y - lastPoint.y;
+        const distance = Math.hypot(dx, dy);
+        const step = 10;
+        for (let i = 1; i < distance / step; i++) {
+          eraseAt(lastPoint.x + (dx * i) / (distance / step), lastPoint.y + (dy * i) / (distance / step), 36);
+        }
+      }
+
+      lastPoint = current;
+      totalCleared += 0.0028;
+
+      if (!hasHiddenHint && totalCleared > 0.035) {
+        steamHint.classList.add("hidden");
+        hasHiddenHint = true;
+      }
+
+      if (totalCleared > clearThreshold) {
+        steamLayer.classList.add("is-cleared");
+        detachSteamListeners();
+      }
+    }
+
+    function startWipe(e) {
+      isDrawing = true;
+      lastPoint = null;
+      wipe(e);
+    }
+
+    function stopWipe() {
+      isDrawing = false;
+      lastPoint = null;
+    }
+
+    function moveWipe(e) {
+      if (!isDrawing) return;
+      wipe(e);
+    }
+
+    function attachSteamListeners() {
+      canvas.addEventListener("mousedown", startWipe);
+      canvas.addEventListener("mousemove", moveWipe);
+      window.addEventListener("mouseup", stopWipe);
+
+      canvas.addEventListener("touchstart", startWipe, { passive: false });
+      canvas.addEventListener("touchmove", moveWipe, { passive: false });
+      window.addEventListener("touchend", stopWipe);
+    }
+
+    function detachSteamListeners() {
+      canvas.removeEventListener("mousedown", startWipe);
+      canvas.removeEventListener("mousemove", moveWipe);
+      window.removeEventListener("mouseup", stopWipe);
+
+      canvas.removeEventListener("touchstart", startWipe);
+      canvas.removeEventListener("touchmove", moveWipe);
+      window.removeEventListener("touchend", stopWipe);
+    }
+
+    if (prefersReducedMotion) {
+      steamHint.textContent = "Коснись экрана, чтобы открыть приглашение";
+      steamLayer.addEventListener(
+        "click",
+        () => {
+          steamLayer.classList.add("is-cleared");
+          detachSteamListeners();
+        },
+        { once: true }
+      );
+    }
+
+    window.addEventListener("resize", resizeCanvas, { passive: true });
+    resizeCanvas();
+    attachSteamListeners();
+  </script>
+</body>
+</html>
